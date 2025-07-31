@@ -1,7 +1,7 @@
 // src/services/records.js
 import axios from 'axios';
 
-const backendUrl = 'http://localhost:3001';
+const backendUrl = 'http://https://web2server-1.onrender.com:3001';
 
 
 function getAuthHeaders() {

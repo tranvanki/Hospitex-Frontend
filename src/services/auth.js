@@ -1,15 +1,17 @@
 import axios from 'axios';
-const backendUrl = 'http://localhost:3001';
+import config from '../config';
+
+const backendUrl = config.apiBaseUrl;
 
 function getAuthHeaders() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem(config.tokenStorageKey);
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 export const login = async (staff_name, password) => {
   const response = await axios.post(`${backendUrl}/login`, { staff_name, password });
    const { token, role } = response.data; // ✅ Destructure from response
-  localStorage.setItem('token', token);
+  localStorage.setItem(config.tokenStorageKey, token);
   localStorage.setItem('role', role);
   localStorage.setItem('staff_name', staff_name);
   return { token, role, staff_name };

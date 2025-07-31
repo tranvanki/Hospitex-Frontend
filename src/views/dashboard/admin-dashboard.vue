@@ -27,7 +27,7 @@ const adminName = ref('Admin User')
 onMounted(async () => {
   const token = localStorage.getItem('token')
   try {
-    const res = await axios.get('http://localhost:3001/staffs', {
+    const res = await axios.get('https://web2server-1.onrender.com/staffs', {
       headers: {
         Authorization: `Bearer ${token}`
       }
