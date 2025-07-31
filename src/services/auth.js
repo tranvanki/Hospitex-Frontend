@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../config';
 
-const backendUrl = config.apiBaseUrl;
+const backendUrl = "https://web2server-1.onrender.com";
 
 function getAuthHeaders() {
   const token = localStorage.getItem(config.tokenStorageKey);

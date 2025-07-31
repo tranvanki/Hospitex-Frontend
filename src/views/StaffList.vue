@@ -215,7 +215,7 @@ const isDeleteReady = computed(() => {
 });
 
 // ✅ API HELPERS
-const getBaseURL = () => 'http://localhost:3001';
+const getBaseURL = () => 'https://web2server-1.onrender.com';
 const getAuthHeaders = () => ({
   'Authorization': `Bearer ${localStorage.getItem('token')}`,
   'Content-Type': 'application/json'

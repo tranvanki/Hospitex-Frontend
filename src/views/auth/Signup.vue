@@ -104,7 +104,7 @@ const submitForm = async () => {
   submittedData.value = { ...formData.value }
   try {
     //callback to api
-    await axios.post('http://localhost:3001/signup', formData.value)
+    await axios.post('https://web2server-1.onrender.com/signup', formData.value)
     alert('Signup successful! Redirecting to login...')
     router.push('/login') // Redirect to login page
   } catch (err) {
