@@ -1,12 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://twoserverweb2.onrender.com';
-const TOKEN_KEY = 'token';
-const USER_KEY = 'user';  // ✅ Store user info separately
+// ✅ SỬA CHO GIỐNG STAFFS.JS
+const backendUrl = 'https://twoserverweb2.onrender.com';  // ← Same as staffs.js
 
 export const login = async (staff_name, password) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/login`, {
+    console.log('🔐 Starting login process...');
+    
+    const response = await axios.post(`${backendUrl}/login`, {  // ← Use backendUrl
       staff_name,
       password
     }, {
@@ -16,29 +17,31 @@ export const login = async (staff_name, password) => {
       timeout: 10000
     });
 
+    console.log('📡 Raw login response:', response.data);
+
     const { token, role, staff_id, staff_name: name } = response.data;
     
-    // ✅ Store both token and user info
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, JSON.stringify({
+    // ✅ Store với key 'token' giống staffs.js
+    localStorage.setItem('token', token);  // ← Same key as staffs.js
+    localStorage.setItem('user', JSON.stringify({
       id: staff_id,
-      name: name,
+      name: name || staff_name,
       role: role,
       staff_name: staff_name
     }));
     
-    console.log('Login successful:', { role, name, staff_id });
+    console.log('💾 Stored successfully:', { role, name: name || staff_name });
     
-    return { token, role, staff_id, staff_name: name };
+    return { token, role, staff_id, staff_name: name || staff_name };
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('❌ Login error:', error);
     throw error;
   }
 };
 
 export const signup = async (formData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/signup`, formData, {
+    const response = await axios.post(`${backendUrl}/signup`, formData, {  // ← Use backendUrl
       headers: {
         'Content-Type': 'application/json'
       },
@@ -51,11 +54,13 @@ export const signup = async (formData) => {
   }
 };
 
-// ✅ Get current user info
+// ✅ Get current user info - SỬ DỤNG KEY GIỐNG STAFFS.JS
 export const getCurrentUser = () => {
   try {
-    const userStr = localStorage.getItem(USER_KEY);
-    return userStr ? JSON.parse(userStr) : null;
+    const userStr = localStorage.getItem('user');  // ← Same key
+    const user = userStr ? JSON.parse(userStr) : null;
+    console.log('🔍 Getting current user:', user);
+    return user;
   } catch (error) {
     console.error('Error parsing user data:', error);
     return null;
@@ -64,18 +69,30 @@ export const getCurrentUser = () => {
 
 // ✅ Check if user is logged in
 export const isAuthenticated = () => {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = localStorage.getItem('token');  // ← Same key as staffs.js
   const user = getCurrentUser();
-  return !!(token && user);
+  const isAuth = !!(token && user);
+  
+  console.log('🔐 Auth check:', {
+    hasToken: !!token,
+    hasUser: !!user,
+    isAuthenticated: isAuth,
+    userRole: user?.role
+  });
+  
+  return isAuth;
 };
 
 // ✅ Get user role
 export const getUserRole = () => {
   const user = getCurrentUser();
-  return user?.role || 'guest';
+  const role = user?.role || 'guest';
+  console.log('👑 User role:', role);
+  return role;
 };
 
 export const logout = () => {
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(USER_KEY);
+  console.log('🚪 Logging out...');
+  localStorage.removeItem('token');  // ← Same key as staffs.js
+  localStorage.removeItem('user');
 };
