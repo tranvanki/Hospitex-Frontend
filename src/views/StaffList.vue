@@ -1,9 +1,13 @@
-<!-- src/components/StaffList.vue -->
 <template>
   <div class="staff-container">
     <div class="staff-header">
-      <h1>👥 {{ $t('staff.title') }}</h1>
-      <p>Manage hospital staff members and their roles</p>
+      <div>
+        <h1>👥 Staff Management</h1>
+        <p>Manage hospital staff members and their roles</p>
+      </div>
+      <router-link to="/add-staff" class="btn btn-primary">
+        ➕ Add New Staff
+      </router-link>
     </div>
     
     <!-- Loading State -->
@@ -19,7 +23,7 @@
       <button @click="fetchStaffData" class="retry-btn">Try Again</button>
     </div>
     
-    <!-- Staff Table -->
+    <!-- Staff Grid -->
     <div v-else class="staff-grid">
       <div v-for="staff in staffList" :key="staff._id" class="staff-card">
         <div class="staff-info">
@@ -43,7 +47,6 @@
         </div>
         
         <div class="staff-actions">
-          <!-- ✅ ADD CLICK HANDLER TO YOUR EXISTING DELETE BUTTON -->
           <button 
             class="action-btn delete" 
             @click="confirmDeleteStaff(staff)"
@@ -61,6 +64,9 @@
       <div class="empty-icon">👥</div>
       <h3>No Staff Members Found</h3>
       <p>There are no staff members in the system yet.</p>
+      <router-link to="/add-staff" class="btn btn-primary">
+        Add First Staff Member
+      </router-link>
     </div>
     
     <!-- Stats Summary -->
@@ -83,7 +89,7 @@
       </div>
     </div>
     
-    <!-- ✅ ADD DELETE CONFIRMATION MODAL -->
+    <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteModal" class="modal-overlay" @click="closeDeleteModal">
       <div class="delete-modal" @click.stop>
         <div class="modal-header">
@@ -100,7 +106,6 @@
             </p>
           </div>
 
-          <!-- Warning for admin -->
           <div v-if="selectedStaff?.role === 'admin'" class="warning-section">
             <div class="warning-icon">🔒</div>
             <div class="warning-text">
@@ -109,7 +114,6 @@
             </div>
           </div>
 
-          <!-- Warning for doctor with patients -->
           <div v-else-if="selectedStaff?.role === 'doctor' && selectedStaff?.patientCount > 0" class="warning-section">
             <div class="warning-icon">⚠️</div>
             <div class="warning-text">
@@ -119,7 +123,6 @@
             </div>
           </div>
 
-          <!-- Confirmation for deletable staff -->
           <div v-else class="confirmation-section">
             <div class="warning-list">
               <h4>⚠️ Warning:</h4>
@@ -184,12 +187,9 @@ import { ref, computed, onMounted } from 'vue';
 import { getAllStaff } from '@/services/staffs.js';
 import axios from 'axios';
 
-// Existing reactive variables
 const staffList = ref([]);
 const loading = ref(true);
 const error = ref('');
-
-// ✅ NEW DELETE FUNCTIONALITY VARIABLES
 const showDeleteModal = ref(false);
 const selectedStaff = ref(null);
 const deleting = ref(false);
@@ -199,7 +199,6 @@ const deleteConfirmation = ref({
   confirmed: false
 });
 
-// ✅ COMPUTED PROPERTIES
 const canDelete = computed(() => {
   return selectedStaff.value && 
          selectedStaff.value.role !== 'admin' && 
@@ -214,14 +213,17 @@ const isDeleteReady = computed(() => {
          !deleting.value;
 });
 
-// ✅ API HELPERS
 const getBaseURL = () => 'https://twoserverweb2.onrender.com';
-const getAuthHeaders = () => ({
-  'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  'Content-Type': 'application/json'
-});
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return token ? {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  } : {
+    'Content-Type': 'application/json'
+  };
+};
 
-// Existing helper functions
 const getInitials = (name) => {
   if (!name) return '??';
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -241,25 +243,29 @@ const getDoctorCount = () => staffList.value.filter(s => s.role?.toLowerCase() =
 const getNurseCount = () => staffList.value.filter(s => s.role?.toLowerCase() === 'nurse').length;
 const getAdminCount = () => staffList.value.filter(s => s.role?.toLowerCase() === 'admin').length;
 
-// ✅ UPDATED FETCH FUNCTION - ADD PATIENT COUNTS
 const fetchStaffData = async () => {
   try {
     loading.value = true;
     error.value = '';
     
+    const token = localStorage.getItem('token');
+    if (!token) {
+      error.value = 'You need to login first';
+      return;
+    }
+    
     console.log('Fetching staff data...');
     const staffData = await getAllStaff();
     console.log('Staff data received:', staffData);
     
-    // ✅ GET PATIENT COUNTS FOR DOCTORS
     try {
       const patientsResponse = await axios.get(`${getBaseURL()}/patients`, {
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
+        timeout: 10000
       });
       
       const patients = patientsResponse.data;
       
-      // Add patient count to each staff member
       staffList.value = staffData.map(staff => ({
         ...staff,
         patientCount: staff.role === 'doctor' 
@@ -269,7 +275,6 @@ const fetchStaffData = async () => {
       
     } catch (patientErr) {
       console.warn('Could not load patient counts:', patientErr);
-      // Still show staff list even if patient count fails
       staffList.value = staffData.map(staff => ({
         ...staff,
         patientCount: 0
@@ -278,13 +283,20 @@ const fetchStaffData = async () => {
     
   } catch (err) {
     console.error('Error fetching staff:', err);
-    error.value = err.response?.data?.message || 'Failed to load staff data. Please try again.';
+    
+    if (err.response?.status === 401) {
+      error.value = 'Your session has expired. Please login again.';
+      localStorage.removeItem('token');
+    } else if (err.response?.status === 403) {
+      error.value = 'You do not have permission to view staff list.';
+    } else {
+      error.value = err.response?.data?.message || 'Failed to load staff data. Please try again.';
+    }
   } finally {
     loading.value = false;
   }
 };
 
-// ✅ NEW DELETE FUNCTIONS
 const confirmDeleteStaff = (staff) => {
   selectedStaff.value = staff;
   showDeleteModal.value = true;
@@ -308,7 +320,6 @@ const resetDeleteForm = () => {
 const deleteStaff = async () => {
   if (!isDeleteReady.value) return;
 
-  // Final browser confirmation
   const finalConfirm = confirm(
     `Are you absolutely sure you want to delete ${selectedStaff.value.staff_name}?\n\n` +
     `This action cannot be undone!`
@@ -322,12 +333,12 @@ const deleteStaff = async () => {
     console.log('Deleting staff:', selectedStaff.value._id);
     
     await axios.delete(`${getBaseURL()}/staffs/${selectedStaff.value._id}`, {
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      timeout: 10000
     });
 
     alert(`${selectedStaff.value.staff_name} has been successfully deleted.`);
     
-    // Reload staff list
     await fetchStaffData();
     closeDeleteModal();
 
@@ -339,7 +350,6 @@ const deleteStaff = async () => {
   }
 };
 
-// Load data when component mounts
 onMounted(() => {
   fetchStaffData();
 });
@@ -355,8 +365,14 @@ onMounted(() => {
 }
 
 .staff-header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .staff-header h1 {
@@ -368,9 +384,31 @@ onMounted(() => {
 .staff-header p {
   color: #6c757d;
   font-size: 1.1rem;
+  margin: 0;
 }
 
-/* Loading State */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #28a745;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #28a745;
+}
+
+.btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -393,7 +431,6 @@ onMounted(() => {
   100% { transform: rotate(360deg); }
 }
 
-/* Error State */
 .error-state {
   text-align: center;
   padding: 4rem;
@@ -418,34 +455,9 @@ onMounted(() => {
   margin-top: 1rem;
 }
 
-/* Staff Table */
-.staff-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 2rem;
-}
-
-.staff-table th, .staff-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.staff-table th {
-  background: #f1f3f5;
-  color: #495057;
-  font-weight: 600;
-}
-
-.staff-table td {
-  background: white;
-  color: #495057;
-}
-
-/* Staff Grid */
 .staff-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
   margin-top: 1rem;
 }
@@ -497,8 +509,40 @@ onMounted(() => {
   font-size: 0.9rem;
 }
 
-/* Action Buttons */
-.action-buttons {
+.role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-badge {
+  background: #dc3545;
+  color: white;
+}
+
+.doctor-badge {
+  background: #007bff;
+  color: white;
+}
+
+.nurse-badge {
+  background: #28a745;
+  color: white;
+}
+
+.staff-badge {
+  background: #6c757d;
+  color: white;
+}
+
+.staff-stats {
+  margin-bottom: 1rem;
+}
+
+.staff-actions {
   display: flex;
   gap: 0.5rem;
 }
@@ -514,20 +558,25 @@ onMounted(() => {
 }
 
 .action-btn.delete {
-  background: #e7f3ff;
-  color: #0d6efd;
+  background: #dc3545;
+  color: white;
 }
 
 .action-btn.edit {
-  background: #fff3cd;
-  color: #fd7e14;
+  background: #fd7e14;
+  color: white;
 }
 
-.action-btn:hover {
+.action-btn:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.action-btn:hover:not(:disabled) {
   transform: translateY(-1px);
 }
 
-/* Stats Summary */
 .stats-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -555,7 +604,6 @@ onMounted(() => {
   font-size: 0.9rem;
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 4rem;
@@ -568,7 +616,6 @@ onMounted(() => {
   margin-bottom: 1rem;
 }
 
-/* ✅ ADD THESE NEW MODAL STYLES */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -719,13 +766,6 @@ onMounted(() => {
 }
 
 .action-btn.disabled {
-  background: #e9ecef;
-  color: #6c757d;
-  cursor: not-allowed;
-}
-
-/* ✅ UPDATE EXISTING DELETE BUTTON STYLES */
-.action-btn.delete:disabled {
   background: #e9ecef;
   color: #6c757d;
   cursor: not-allowed;
