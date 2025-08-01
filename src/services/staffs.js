@@ -1,23 +1,21 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://twoserverweb2.onrender.com';
-const TOKEN_KEY = 'token';
+const backendUrl = 'https://twoserverweb2.onrender.com';
 
 function getAuthHeaders() {
-  const token = localStorage.getItem(TOKEN_KEY);
-  return token ? { 
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  } : {
-    'Content-Type': 'application/json'
-  };
+  const token = localStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json' // ← Add this
+} : {
+      'Content-Type': 'application/json'
+
+};
 }
 
 export const getAllStaff = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/staffs`, {
-      headers: getAuthHeaders(),
-      timeout: 10000
+    const response = await axios.get(`${backendUrl}/staffs`, {
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -28,9 +26,8 @@ export const getAllStaff = async () => {
 
 export const getStaffById = async (id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/staffs/${id}`, {
-      headers: getAuthHeaders(),
-      timeout: 10000
+    const response = await axios.get(`${backendUrl}/staffs/${id}`, {
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -41,9 +38,8 @@ export const getStaffById = async (id) => {
 
 export const createStaff = async (staffData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/staffs`, staffData, {
-      headers: getAuthHeaders(),
-      timeout: 10000
+    const response = await axios.post(`${backendUrl}/staffs`, staffData, {
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -54,9 +50,8 @@ export const createStaff = async (staffData) => {
 
 export const updateStaff = async (id, staffData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/staffs/${id}`, staffData, {
-      headers: getAuthHeaders(),
-      timeout: 10000
+    const response = await axios.put(`${backendUrl}/staffs/${id}`, staffData, {
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -67,9 +62,8 @@ export const updateStaff = async (id, staffData) => {
 
 export const deleteStaff = async (id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/staffs/${id}`, {
-      headers: getAuthHeaders(),
-      timeout: 10000
+    const response = await axios.delete(`${backendUrl}/staffs/${id}`, {
+      headers: getAuthHeaders()
     });
     return response.data;
   } catch (error) {
@@ -77,3 +71,6 @@ export const deleteStaff = async (id) => {
     throw error;
   }
 };
+
+
+
