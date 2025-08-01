@@ -65,7 +65,7 @@ onMounted(fetchData)
   <div class="container">
     <div class="header">
       <h1>Medical Records</h1>
-      <button @click="showModal = true" class="btn">Add Record</button>
+      <!-- ✅ XÓA NÚT ADD RECORD -->
     </div>
 
     <input v-model="searchQuery" placeholder="Search..." class="search" />
@@ -82,13 +82,14 @@ onMounted(fetchData)
       />
       <div v-if="filteredRecords.length === 0" class="center">
         <p>No records found</p>
-        <button @click="showModal = true" class="btn">Add First Record</button>
+        <!-- ✅ XÓA NÚT ADD FIRST RECORD -->
       </div>
     </div>
 
+    <!-- ✅ GIỮ LẠI MODAL CHO EDIT -->
     <div v-if="showModal" class="modal" @click="showModal = false">
       <div class="modal-box" @click.stop>
-        <h3>Medical Record</h3>
+        <h3>Edit Medical Record</h3>
         <form @submit.prevent="saveRecord">
           <select v-model="recordForm.patient_id" required>
             <option value="">Select Patient</option>
@@ -99,7 +100,7 @@ onMounted(fetchData)
           <textarea v-model="recordForm.notes" placeholder="Notes" required></textarea>
           <div class="actions">
             <button type="button" @click="showModal = false">Cancel</button>
-            <button type="submit" class="btn">Save</button>
+            <button type="submit" class="btn">Save Changes</button>
           </div>
         </form>
       </div>
