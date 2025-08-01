@@ -14,6 +14,7 @@ import PatientDetails from "./views/patient/PatientDetails.vue";
 import AddVitals from "./views/vitals/AddVitals.vue";
 import VitalsList from "./views/vitals/VitalsList.vue";
 import PatientVitals from "./views/vitals/PatientVitals.vue";
+import AddStaff from "./view/Addstaff.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -29,10 +30,6 @@ const routes = [
   { path: '/patient-list', name: 'PatientList', component: patient_list },
   { path: '/patient-details/:id', name: 'PatientDetails', component: PatientDetails, props: true },
   
-  // ✅ REPLACE this old route
-  // { path: '/add-vitals',  name: 'AddVitals', component: AddVitals },
-  
-  // ✅ ADD this new route with patient ID parameter
   { path: '/patient/:id/add-vitals', name: 'AddVitals', component: AddVitals, props: true },
   
   { path: '/vitals-list', name: 'VitalsList', component: VitalsList },
@@ -43,6 +40,9 @@ const routes = [
     component: AddRecord, 
     props: true 
   },
+  {path: '/add-staff',
+    name: 'AddStaff',
+    component: AddStaff}
 ];
 const router = createRouter({
   history: createWebHistory(),
