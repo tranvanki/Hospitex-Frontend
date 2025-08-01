@@ -1,29 +1,39 @@
 import axios from 'axios';
-import config from '../config';
 
-const backendUrl = config.apiBaseUrl;
-
-function getAuthHeaders() {
-  const token = localStorage.getItem(config.tokenStorageKey);
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
+const API_BASE_URL = 'https://twoserverweb2.onrender.com';
+const TOKEN_KEY = 'token';
 
 export const login = async (staff_name, password) => {
-  const response = await axios.post(`${backendUrl}/login`, { staff_name, password });
-   const { token, role } = response.data; // ✅ Destructure from response
-  localStorage.setItem(config.tokenStorageKey, token);
-  localStorage.setItem('role', role);
-  localStorage.setItem('staff_name', staff_name);
-  return { token, role, staff_name };
-};
-
-export const signup = async (staffData) => {
   try {
-    const response = await axios.post(`${backendUrl}/signup`, staffData, {
+    const response = await axios.post(`${API_BASE_URL}/login`, {
+      staff_name,
+      password
+    }, {
       headers: {
         'Content-Type': 'application/json'
       },
-      timeout: config.apiTimeout
+      timeout: 10000
+    });
+
+    const { token, role } = response.data;
+    
+    // Store token
+    localStorage.setItem(TOKEN_KEY, token);
+    
+    return { token, role };
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
+
+export const signup = async (formData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/signup`, formData, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      timeout: 10000
     });
     return response.data;
   } catch (error) {
@@ -32,14 +42,6 @@ export const signup = async (staffData) => {
   }
 };
 
-export const getAdminData = async () => {
-  return axios.get(`${backendUrl}/admin-data`, { headers: getAuthHeaders() });
-};
-
-export const getDoctorData = async () => {
-  return axios.get(`${backendUrl}/doctor-data`, { headers: getAuthHeaders() });
-};
-
-export const getStaffData = async () => {
-  return axios.get(`${backendUrl}/staff-data`, { headers: getAuthHeaders() });
+export const logout = () => {
+  localStorage.removeItem(TOKEN_KEY);
 };
