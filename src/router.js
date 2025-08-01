@@ -15,29 +15,6 @@ import AddVitals from "./views/vitals/AddVitals.vue";
 import VitalsList from "./views/vitals/VitalsList.vue";
 import PatientVitals from "./views/vitals/PatientVitals.vue";
 
-// const routes = [
-//   { path: '/', name: 'Home', component: Home },
-//   { path: '/login', name: 'Login', component: Login },
-//   { path: '/signup', name: 'Signup', component: Signup },
-//   { path: '/staff-list', name: 'StaffList', component: StaffList },
-//   { path: '/admin-dashboard', name: 'AdminDashboard', component: AdminDashboard },
-//   { path: '/doctor-dashboard', name: 'DoctorDashboard', component: DoctorDashboard },
-//   { path: '/add-record', name: 'AddRecord', component: AddRecord },
-//   { path: '/record-list', name: 'RecordList', component: RecordList },
-//   { path: '/create-patient', name: 'CreatePatient', component: CreatePatient },
-//   { path: '/edit-patient/:id', name: 'EditPatient', component: EditPatient, props: true },
-//   { path: '/patient-list', name: 'PatientList', component: patient_list },
-//   { path: '/patient-details/:id', name: 'PatientDetails', component: PatientDetails, props: true },
-//   { path: '/add-vitals', name: 'AddVitals', component: AddVitals },
-//   { path: '/vitals-list', name: 'VitalsList', component: VitalsList },
-//   { path: '/patient/:patientId/vitals', name: 'PatientVitals', component: PatientVitals, props: true },
-//   { 
-//     path: '/patient/:patientId/add-record', 
-//     name: 'AddPatientRecord', 
-//     component: AddRecord, 
-//     props: true 
-//   },
-// ];
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/login', name: 'Login', component: Login },

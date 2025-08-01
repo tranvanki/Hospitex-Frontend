@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../config';
 
-const backendUrl = "https://web2server-1.onrender.com";
+const backendUrl = config.apiBaseUrl;
 
 function getAuthHeaders() {
   const token = localStorage.getItem(config.tokenStorageKey);
@@ -15,6 +15,21 @@ export const login = async (staff_name, password) => {
   localStorage.setItem('role', role);
   localStorage.setItem('staff_name', staff_name);
   return { token, role, staff_name };
+};
+
+export const signup = async (staffData) => {
+  try {
+    const response = await axios.post(`${backendUrl}/signup`, staffData, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      timeout: config.apiTimeout
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Signup error:', error);
+    throw error;
+  }
 };
 
 export const getAdminData = async () => {

@@ -82,7 +82,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { signup } from '../../services/auth'
 const router = useRouter();
 const formData = ref({
   staff_id: '',
@@ -97,20 +97,35 @@ const formData = ref({
 })
 
 const submittedData = ref(null)
-//this is 
+
 const submitForm = async () => {
-  // You can send formData.value to your backend API here
   console.log('Form submitted:', formData.value)
   submittedData.value = { ...formData.value }
+  
   try {
-    //callback to api
-    await axios.post('https://web2server-1.onrender.com/signup', formData.value)
+    const response = await signup(formData.value)
+    console.log('Signup response:', response)
     alert('Signup successful! Redirecting to login...')
-    router.push('/login') // Redirect to login page
+    router.push('/login')
+    
   } catch (err) {
-    alert('Signup failed!')
+    console.error('Signup error:', err)
+    
+    // Better error handling
+    if (err.response) {
+      // Server responded with error status
+      console.error('Error response:', err.response.data)
+      alert(`Signup failed: ${err.response.data.message || err.response.data.error || 'Server error'}`)
+    } else if (err.request) {
+      // Request was made but no response received
+      console.error('No response received:', err.request)
+      alert('Signup failed: Cannot connect to server. Please check your internet connection.')
+    } else {
+      // Something else happened
+      console.error('Request error:', err.message)
+      alert(`Signup failed: ${err.message}`)
+    }
   }
-
 }
 </script>
 

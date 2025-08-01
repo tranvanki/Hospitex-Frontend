@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const backendUrl = 'https://web2server-1.onrender.com';
+const backendUrl = 'https://twoserverweb2.onrender.com';
 //Get auth headers function
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
@@ -52,12 +52,17 @@ export const createPatient = async (patientData) => {
 };
 
 // Update patient
-export const updatePatient = async (id, patientData) => {
+export const updatePatientById = async (id, patientData) => {
   try {
-    const res = await axios.put(`${backendUrl}/patients/${id}`, patientData, { headers: getAuthHeaders() });
-    return res.data;
+    const response = await axios.put(`${backendUrl}/patients/${id}`, patientData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return response.data;
   } catch (error) {
-    console.error(`Error updating patient ID ${id}:`, error);
+    console.error('Update patient error:', error);
     throw error;
   }
 };

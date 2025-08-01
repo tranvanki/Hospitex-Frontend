@@ -1,7 +1,7 @@
 // src/services/vitals.js
 import axios from 'axios';
 
-const backendUrl = "https://web2server-1.onrender.com";
+const backendUrl = "https://twoserverweb2.onrender.com";
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token');

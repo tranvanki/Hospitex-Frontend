@@ -3,7 +3,7 @@
 
 const config = {
   // API Configuration
-  apiBaseUrl: process.env.VUE_APP_API_BASE_URL || 'https://web2server-1.onrender.com',
+  apiBaseUrl: process.env.VUE_APP_API_BASE_URL || 'https://twoserverweb2.onrender.com',
   apiTimeout: parseInt(process.env.VUE_APP_API_TIMEOUT) || 10000,
   maxFileSize: parseInt(process.env.VUE_APP_MAX_FILE_SIZE) || 5242880,
 
