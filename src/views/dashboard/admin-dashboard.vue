@@ -6,7 +6,7 @@
     <router-link to="/staff-list" class="ui button primary">
       📋 View Staff List
     </router-link>
-    <router-link to="/signup" class="ui button secondary">
+    <router-link to="/add-staff" class="ui button secondary">
       ➕ Add New Staff
     </router-link>
     
@@ -19,80 +19,29 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { getCurrentUser, logout as authLogout } from '@/services/auth'
 
 const router = useRouter()
 const adminName = ref('Admin User')
 
-onMounted(async () => {
-  const token = localStorage.getItem('token')
-  try {
-    const res = await axios.get('https://web2server-1.onrender.com/staffs', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-
-    const adminUser = Array.isArray(res.data) 
-      ? res.data.find(staff => staff.role === 'admin')
-      : res.data
-    
-    adminName.value = adminUser?.staff_name || 'Admin User'
-  } catch (err) {
-    console.error('Error loading admin info:', err)
+onMounted(() => {
+  // ✅ SỬA: Dùng getCurrentUser từ auth.js
+  const user = getCurrentUser()
+  
+  if (user) {
+    adminName.value = user.name || user.staff_name || 'Admin User'
+    console.log('✅ Admin user loaded:', user)
+  } else {
+    console.log('❌ No user found, redirecting to login')
+    router.push('/login')
   }
 })
 
 const logout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('userRole')
-  localStorage.removeItem('userId')
-  
+  authLogout()  // ✅ Dùng logout từ auth.js
   alert('Logged out successfully!')
-  router.push('/')
+  router.push('/login')
 }
 </script>
 
-<style scoped>
-.admin-dashboard {
-  padding: 2rem;
-}
-
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.ui.button {
-  margin-right: 1rem;
-  margin-top: 1rem;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.2s;
-}
-
-.ui.button.primary {
-  background: #007bff;
-  color: white;
-}
-
-.ui.button.secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.ui.button:hover {
-  transform: translateY(-1px);
-  opacity: 0.9;
-}
-
-button.ui.button {
-  border: none;
-  font-family: inherit;
-}
-</style>
+<!-- ...existing styles... -->
