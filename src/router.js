@@ -14,7 +14,7 @@ import PatientDetails from "./views/patient/PatientDetails.vue";
 import AddVitals from "./views/vitals/AddVitals.vue";
 import VitalsList from "./views/vitals/VitalsList.vue";
 import PatientVitals from "./views/vitals/PatientVitals.vue";
-import AddStaff from "./view/Addstaff.vue";
+import AddStaff from "./views/Addstaff.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
