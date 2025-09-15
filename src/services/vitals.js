@@ -1,8 +1,9 @@
 // src/services/vitals.js
 import axios from 'axios';
 
-const backendUrl = "http://localhost:3001";
+import { API_BASE_URL } from './config.js';
 
+const backendUrl = API_BASE_URL;
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
   return token ? { 

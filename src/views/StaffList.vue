@@ -303,7 +303,10 @@ const isDeleteReady = computed(() => {
 });
 
 // API HELPERS
-const getBaseURL = () => 'http://localhost:3001';
+import { API_BASE_URL } from './config.js';
+
+const backendUrl = API_BASE_URL;
+const getBaseURL = () => backendUrl;
 const getAuthHeaders = () => ({
   'Authorization': `Bearer ${localStorage.getItem('token')}`,
   'Content-Type': 'application/json'

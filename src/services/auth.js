@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { API_BASE_URL } from './config.js';
 
-const backendUrl = 'http://localhost:3001';
+const backendUrl = API_BASE_URL;
 
 
 export const login = async (staff_name, password) => {
   try {
-    console.log('🔐 Starting login process...');
+    console.log(' Starting login process...');
     
     const response = await axios.post(`${backendUrl}/login`, {
       staff_name,

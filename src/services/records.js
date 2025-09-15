@@ -1,8 +1,9 @@
 // src/services/records.js
 import axios from 'axios';
 
-    const backendUrl = 'http://localhost:3001';
+import { API_BASE_URL } from './config.js';
 
+const backendUrl = API_BASE_URL;
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
@@ -14,7 +15,7 @@ function getAuthHeaders() {
 };
 }
 
-// 📥 Get all medical records
+//  Get all medical records
 export const getAllRecords = async () => {
   try {
     const response = await axios.get(`${backendUrl}/medic-records`, {
