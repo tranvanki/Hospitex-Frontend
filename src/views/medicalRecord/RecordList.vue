@@ -24,7 +24,6 @@ const filteredRecords = computed(() => {
     record.patient_name?.toLowerCase().includes(query)
   )
 })
-
 const fetchData = async () => {
   try {
     const data = await getAllRecords()
@@ -36,13 +35,11 @@ const fetchData = async () => {
     loading.value = false
   }
 }
-
 const saveRecord = () => {
   console.log('Saving:', recordForm.value)
   showModal.value = false
   resetForm()
 }
-
 const editRecord = (record) => {
   recordForm.value = { ...record }
   showModal.value = true

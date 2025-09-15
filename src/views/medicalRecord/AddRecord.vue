@@ -95,7 +95,7 @@
             type="button" 
             @click="router.push(`/patient-details/${patientId}`)"
             class="btn btn-secondary"
-          >
+          ><!---patient-details-->
             ← Cancel
           </button>
         </div>
@@ -168,7 +168,7 @@ const submitRecord = async () => {
     await createMedicalRecord(recordForm.value);
     
     alert('Medical record saved successfully!');
-    router.push(`/patient/${patientId}`);
+    router.push(`/record-list`);
   } catch (err) {
     console.error('Error saving medical record:', err);
     error.value = err.response?.data?.message || 'Failed to save medical record.';

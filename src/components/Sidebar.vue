@@ -48,7 +48,6 @@ export default {
     },
     changeLanguage() {
       localStorage.setItem('lang', this.selectedLang);
-      // For now just update the storage, you'll need vue-i18n for real translations
       console.log(`Language changed to: ${this.selectedLang}`);
     }
   }

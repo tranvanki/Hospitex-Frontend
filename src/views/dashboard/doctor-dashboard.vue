@@ -1,35 +1,51 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
-
+import { totalPatients } from '@/services/patients'
+import { totalVital } from '@/services/vitals'
+import { totalMedicalRecords } from '@/services/records'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const doctorName = ref('Doctor')
+const loading = ref(true)
 const stats = ref({
   totalPatients: 0,
-  todayAppointments: 0,
-  pendingVitals: 0,
-  completedRecords: 0
+  totalVitals: 0,
+  totalMedicalRecords: 0
 })
-
 // Fetch doctor info and stats
 onMounted(async () => {
   try {
     const token = localStorage.getItem('token')
-    // Get doctor name
-    doctorName.value = localStorage.getItem('staff_name') || 'doctor'
-    
-    if (statsRes.data) {
-      stats.value = statsRes.data
+    if (!token) {
+      router.push('/login')
+      return('Redirect to login')
     }
+    
+    doctorName.value = localStorage.getItem('staff_name') || 'Doctor'   
+    console.log('Fetching dashboard stats...')
+    const [patientsRes, vitalsRes, recordsRes] = await Promise.all([
+      totalPatients(),
+      totalVital(),
+      totalMedicalRecords(token)
+    ])
+    // Ensure we have valid numbers
+    stats.value = {
+      totalPatients: Number(patientsRes) || 0,
+      totalVitals: Number(vitalsRes) || 0,
+      totalMedicalRecords: Number(recordsRes) || 0
+    }
+    
+    console.log('Final stats:', stats.value);
     
   } catch (err) {
     console.error('Failed to load dashboard data:', err)
-    // Use fallback data if API fails
     stats.value = {
-      totalPatients: 42,
-      todayAppointments: 8,
-      pendingVitals: 5,
-      completedRecords: 127
+      totalPatients: 0,
+      totalVitals: 0,
+      totalMedicalRecords: 0
     }
+  } finally {
+    loading.value = false
   }
 })
 </script>
@@ -54,15 +70,9 @@ onMounted(async () => {
           <div class="stat-icon">👥</div>
           <div class="stat-content">
             <div class="stat-label">Total Patients</div>
-            <div class="stat-value">{{ stats.totalPatients }}</div>
-          </div>
-        </div>
-        
-        <div class="stat-card green">
-          <div class="stat-icon">📅</div>
-          <div class="stat-content">
-            <div class="stat-label">Today Appointments</div>
-            <div class="stat-value">{{ stats.todayAppointments }}</div>
+            <div class="stat-value">
+              {{ loading ? 'Loading...' : stats.totalPatients }}
+            </div>
           </div>
         </div>
         
@@ -70,7 +80,9 @@ onMounted(async () => {
           <div class="stat-icon">❤️</div>
           <div class="stat-content">
             <div class="stat-label">Pending Vitals</div>
-            <div class="stat-value">{{ stats.pendingVitals }}</div>
+            <div class="stat-value">
+              {{ loading ? 'Loading...' : stats.totalVitals }}
+            </div>
           </div>
         </div>
         
@@ -78,7 +90,9 @@ onMounted(async () => {
           <div class="stat-icon">📋</div>
           <div class="stat-content">
             <div class="stat-label">Medical Records</div>
-            <div class="stat-value">{{ stats.completedRecords }}</div>
+            <div class="stat-value">
+              {{ loading ? 'Loading...' : stats.totalMedicalRecords }}
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,14 @@
+File Structure
+components/
+├── staff/
+│   ├── StaffList.vue (Main container - 50 lines)
+│   ├── StaffCard.vue (Individual card - 80 lines)
+│   ├── StaffFilters.vue (Search/filter - 60 lines)
+│   ├── StaffStats.vue (Statistics - 40 lines)
+│   └── modals/
+│       ├── DeleteStaffModal.vue (150 lines)
+│       └── EditStaffModal.vue (120 lines)
+composables/
+├── useStaffData.js (Data management)
+├── useStaffActions.js (CRUD operations)
+└── useModal.js (Modal state management)

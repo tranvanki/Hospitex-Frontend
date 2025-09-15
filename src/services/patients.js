@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const backendUrl = 'https://twoserverweb2.onrender.com';
+const backendUrl = 'http://localhost:3001';
 //Get auth headers function
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
@@ -73,6 +73,18 @@ export const deletePatientById = async (id) => {
     await axios.delete(`${backendUrl}/patients/${id}`, { headers: getAuthHeaders() });
   } catch (error) {
     console.error(`Error deleting patient ID ${id}:`, error);
+    throw error;
+  }
+};
+
+export const totalPatients = async () => {
+  try {
+    const res = await axios.get(`${backendUrl}/patients/total`, { headers: getAuthHeaders() });
+    
+    // Use the correct property name from your backend
+    return res.data.totalPatient ;  // Handle both cases
+  } catch (error) {
+    console.error('Error fetching total patients:', error);
     throw error;
   }
 };

@@ -110,10 +110,6 @@ const calculateAge = (dateOfBirth) => {
               <span>{{ formatDate(patient.date_of_birth) || 'N/A' }}</span>
             </div>
             
-            <div class="info-item">
-              <label>Age</label>
-              <span>{{ calculateAge(patient.date_of_birth) || 'N/A' }} years</span>
-            </div>
             
             <div class="info-item">
               <label>Gender</label>
@@ -126,18 +122,8 @@ const calculateAge = (dateOfBirth) => {
             </div>
             
             <div class="info-item">
-              <label>Email</label>
-              <span>{{ patient.email || 'N/A' }}</span>
-            </div>
-            
-            <div class="info-item">
               <label>Address</label>
               <span>{{ patient.address || 'N/A' }}</span>
-            </div>
-            
-            <div class="info-item">
-              <label>Emergency Contact</label>
-              <span>{{ patient.emergency_contact || 'N/A' }}</span>
             </div>
             
             <div class="info-item">
@@ -151,9 +137,9 @@ const calculateAge = (dateOfBirth) => {
             </div>
             
             <div class="info-item">
-              <label>Status</label>
-              <span class="status-badge" :class="patient.status?.toLowerCase()">
-                {{ patient.status || 'Active' }}
+              <label>Discharge Status</label>
+              <span class="status-badge" :class="patient.discharge_status?.toLowerCase()">
+                {{ patient.discharge_status || 'Active' }}
               </span>
             </div>
           </div>

@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-// ✅ SỬA CHO GIỐNG STAFFS.JS
-const backendUrl = 'https://twoserverweb2.onrender.com';  // ← Same as staffs.js
+const backendUrl = 'http://localhost:3001';
+
 
 export const login = async (staff_name, password) => {
   try {
     console.log('🔐 Starting login process...');
     
-    const response = await axios.post(`${backendUrl}/login`, {  // ← Use backendUrl
+    const response = await axios.post(`${backendUrl}/login`, {
       staff_name,
       password
     }, {
@@ -17,31 +17,47 @@ export const login = async (staff_name, password) => {
       timeout: 10000
     });
 
-    console.log('📡 Raw login response:', response.data);
+    console.log('📡 Login response received');
 
-    const { token, role, staff_id, staff_name: name } = response.data;
+    const { token, role } = response.data;
     
-    // ✅ Store với key 'token' giống staffs.js
-    localStorage.setItem('token', token);  // ← Same key as staffs.js
+    if (!token || !role) {
+      throw new Error('Invalid server response: missing token or role');
+    }
+    
+    console.log('✅ Login successful');
+    
+    // Store authentication data
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', role);
+    localStorage.setItem('staff_name', staff_name);
+    localStorage.setItem('staff_id', 'logged_in_user');
+    
+    // Store user object for admin dashboard
     localStorage.setItem('user', JSON.stringify({
-      id: staff_id,
-      name: name || staff_name,
+      id: 'logged_in_user',
+      name: staff_name,
       role: role,
       staff_name: staff_name
     }));
     
-    console.log('💾 Stored successfully:', { role, name: name || staff_name });
+    console.log('💾 User data stored successfully');
     
-    return { token, role, staff_id, staff_name: name || staff_name };
+    return { token, role, staff_id: 'logged_in_user', staff_name };
   } catch (error) {
     console.error('❌ Login error:', error);
     throw error;
   }
 };
 
+/**
+ * 👤 User signup function
+ * @param {object} formData - User registration data
+ * @returns {Promise<object>} Signup response
+ */
 export const signup = async (formData) => {
   try {
-    const response = await axios.post(`${backendUrl}/signup`, formData, {  // ← Use backendUrl
+    const response = await axios.post(`${backendUrl}/signup`, formData, {
       headers: {
         'Content-Type': 'application/json'
       },
@@ -54,45 +70,30 @@ export const signup = async (formData) => {
   }
 };
 
-// ✅ Get current user info - SỬ DỤNG KEY GIỐNG STAFFS.JS
+/**
+ * 🔍 Get current logged-in user
+ * @returns {object|null} User object or null if not found
+ */
 export const getCurrentUser = () => {
   try {
-    const userStr = localStorage.getItem('user');  // ← Same key
+    const userStr = localStorage.getItem('user');
     const user = userStr ? JSON.parse(userStr) : null;
-    console.log('🔍 Getting current user:', user);
+    console.log('🔍 Getting current user:', user?.name || 'Not found');
     return user;
   } catch (error) {
-    console.error('Error parsing user data:', error);
+    console.error('❌ Error parsing user data:', error);
     return null;
   }
 };
 
-// ✅ Check if user is logged in
-export const isAuthenticated = () => {
-  const token = localStorage.getItem('token');  // ← Same key as staffs.js
-  const user = getCurrentUser();
-  const isAuth = !!(token && user);
-  
-  console.log('🔐 Auth check:', {
-    hasToken: !!token,
-    hasUser: !!user,
-    isAuthenticated: isAuth,
-    userRole: user?.role
-  });
-  
-  return isAuth;
-};
-
-// ✅ Get user role
-export const getUserRole = () => {
-  const user = getCurrentUser();
-  const role = user?.role || 'guest';
-  console.log('👑 User role:', role);
-  return role;
-};
-
 export const logout = () => {
   console.log('🚪 Logging out...');
-  localStorage.removeItem('token');  // ← Same key as staffs.js
+  localStorage.removeItem('token');
   localStorage.removeItem('user');
+  localStorage.removeItem('staff_name');
+  localStorage.removeItem('role');
+  localStorage.removeItem('staff_id');
+  localStorage.removeItem('_id');
+  localStorage.removeItem('id');
+  console.log('✅ Logout completed');
 };

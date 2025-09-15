@@ -1,7 +1,7 @@
 // src/services/vitals.js
 import axios from 'axios';
 
-const backendUrl = "https://twoserverweb2.onrender.com";
+const backendUrl = "http://localhost:3001";
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
@@ -85,5 +85,15 @@ export const deleteVital = async (id) => {
     console.error(`Error deleting vital ${id}:`, error);
     throw error;
   }
-}
+};
+export const totalVital = async () => {
+  try {
+    const res = await axios.get(`${backendUrl}/vitals/totalVitals`, { headers: getAuthHeaders() });
+    return res.data.totalVital;
+  } catch (error) {
+    console.error('Error fetching total vitals:', error);
+    throw error;
+  }
+};
+
 

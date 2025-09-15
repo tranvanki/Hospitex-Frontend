@@ -1,7 +1,7 @@
 // src/services/records.js
 import axios from 'axios';
 
-    const backendUrl = 'https://web2server-1.onrender.com';
+    const backendUrl = 'http://localhost:3001';
 
 
 function getAuthHeaders() {
@@ -88,6 +88,16 @@ export const deleteRecord = async (id) => {
     });
   } catch (error) {
     console.error(`Error deleting record with ID ${id}:`, error);
+    throw error;
+  }
+};
+//total medical records
+export const totalMedicalRecords = async () => {
+  try {
+    const res = await axios.get(`${backendUrl}/medic-records/totalMedicalRecords`, { headers: getAuthHeaders() });
+    return res.data.totalMedicRecord;
+  } catch (error) {
+    console.error('Error fetching total medical records:', error);
     throw error;
   }
 };
