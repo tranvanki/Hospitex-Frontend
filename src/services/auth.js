@@ -8,7 +8,7 @@ export const login = async (staff_name, password) => {
   try {
     console.log(' Starting login process...');
     
-    const response = await axios.post(`${backendUrl}/login`, {
+    const response = await axios.post(`${backendUrl}/api/auth/login`, {
       staff_name,
       password
     }, {
@@ -58,7 +58,7 @@ export const login = async (staff_name, password) => {
  */
 export const signup = async (formData) => {
   try {
-    const response = await axios.post(`${backendUrl}/signup`, formData, {
+    const response = await axios.post(`${backendUrl}/api/auth/signup`, formData, {
       headers: {
         'Content-Type': 'application/json'
       },
