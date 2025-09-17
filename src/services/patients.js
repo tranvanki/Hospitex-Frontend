@@ -21,7 +21,7 @@ export const getAllPatient = async () => {
 //Get my patients
 export const getMyPatients = async () => {
   try {
-    const res = await axios.get(`${backendUrl}/patients/my-patients`, { 
+    const res = await axios.get(`${backendUrl}/api/auth/patients/my-patients`, { 
       headers: getAuthHeaders() 
     });
     return res.data;
@@ -33,7 +33,7 @@ export const getMyPatients = async () => {
 // Get patient by ID
 export const getPatientById = async (id) => {
   try {
-    const res = await axios.get(`${backendUrl}/patients/${id}`, { headers: getAuthHeaders() } );
+    const res = await axios.get(`${backendUrl}/api/auth/patients/${id}`, { headers: getAuthHeaders() } );
     return res.data;
   } catch (error) {
     console.error(`Error fetching patient with ID ${id}:`, error);
@@ -44,7 +44,7 @@ export const getPatientById = async (id) => {
 // Create new patient
 export const createPatient = async (patientData) => {
   try {
-    const res = await axios.post(`${backendUrl}/patients`, patientData, { headers: getAuthHeaders() } );
+    const res = await axios.post(`${backendUrl}/api/auth/patients`, patientData, { headers: getAuthHeaders() } );
     return res.data;
   } catch (error) {
     console.error('Error creating patient:', error);
@@ -55,7 +55,7 @@ export const createPatient = async (patientData) => {
 // Update patient
 export const updatePatientById = async (id, patientData) => {
   try {
-    const response = await axios.put(`${backendUrl}/patients/${id}`, patientData, {
+    const response = await axios.put(`${backendUrl}/api/auth/patients/${id}`, patientData, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -71,7 +71,7 @@ export const updatePatientById = async (id, patientData) => {
 // Delete patient
 export const deletePatientById = async (id) => {
   try {
-    await axios.delete(`${backendUrl}/patients/${id}`, { headers: getAuthHeaders() });
+    await axios.delete(`${backendUrl}/api/auth/patients/${id}`, { headers: getAuthHeaders() });
   } catch (error) {
     console.error(`Error deleting patient ID ${id}:`, error);
     throw error;
@@ -80,7 +80,7 @@ export const deletePatientById = async (id) => {
 
 export const totalPatients = async () => {
   try {
-    const res = await axios.get(`${backendUrl}/patients/total`, { headers: getAuthHeaders() });
+    const res = await axios.get(`${backendUrl}/api/auth/patients/total`, { headers: getAuthHeaders() });
     
     // Use the correct property name from your backend
     return res.data.totalPatient ;  // Handle both cases

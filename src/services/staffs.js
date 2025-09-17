@@ -15,7 +15,7 @@ function getAuthHeaders() {
 
 export const getAllStaff = async () => {
   try {
-    const response = await axios.get(`${backendUrl}/staffs`, {
+    const response = await axios.get(`${backendUrl}/api/staffs`, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -27,7 +27,7 @@ export const getAllStaff = async () => {
 
 export const getStaffById = async (id) => {
   try {
-    const response = await axios.get(`${backendUrl}/staffs/${id}`, {
+    const response = await axios.get(`${backendUrl}/api/staffs/${id}`, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -39,7 +39,7 @@ export const getStaffById = async (id) => {
 
 export const createStaff = async (staffData) => {
   try {
-    const response = await axios.post(`${backendUrl}/staffs`, staffData, {
+    const response = await axios.post(`${backendUrl}/api/staffs`, staffData, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -51,7 +51,7 @@ export const createStaff = async (staffData) => {
 
 export const updateStaff = async (id, staffData) => {
   try {
-    const response = await axios.put(`${backendUrl}/staffs/${id}`, staffData, {
+    const response = await axios.put(`${backendUrl}/api/staffs/${id}`, staffData, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -63,7 +63,7 @@ export const updateStaff = async (id, staffData) => {
 
 export const deleteStaff = async (id) => {
   try {
-    const response = await axios.delete(`${backendUrl}/staffs/${id}`, {
+    const response = await axios.delete(`${backendUrl}/api/staffs/${id}`, {
       headers: getAuthHeaders()
     });
     return response.data;

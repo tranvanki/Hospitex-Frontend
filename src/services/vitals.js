@@ -27,7 +27,7 @@ export const createVital = async (vitalData) => {
       throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
     }
     
-    const response = await axios.post(`${backendUrl}/vitals`, vitalData, {
+    const response = await axios.post(`${backendUrl}/api/vitals`, vitalData, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -40,7 +40,7 @@ export const createVital = async (vitalData) => {
 //getAllVitals
 export const getAllVitals = async () => {
   try {
-    const response = await axios.get(`${backendUrl}/vitals`, {
+    const response = await axios.get(`${backendUrl}/api/vitals`, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -53,7 +53,7 @@ export const getAllVitals = async () => {
 // Get vitals for a specific patient
 export const getVitalsByPatientId = async (patientId) => {
   try {
-    const response = await axios.get(`${backendUrl}/vitals/patient/${patientId}`, {
+    const response = await axios.get(`${backendUrl}/api/vitals/patient/${patientId}`, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -65,7 +65,7 @@ export const getVitalsByPatientId = async (patientId) => {
 //update vital
 export const updateVital = async (id, vitalData) => {
     try{
-      const res = await axios.put(`${backendUrl}/vitals/${id}`, vitalData, {
+      const res = await axios.put(`${backendUrl}/api/vitals/${id}`, vitalData, {
         headers: getAuthHeaders()
       });
       return res.data;
@@ -78,7 +78,7 @@ export const updateVital = async (id, vitalData) => {
 
 export const deleteVital = async (id) => {
   try {
-    const res = await axios.delete(`${backendUrl}/vitals/${id}`, {
+    const res = await axios.delete(`${backendUrl}/api/vitals/${id}`, {
       headers: getAuthHeaders()
     });
     return res.data;
@@ -89,7 +89,7 @@ export const deleteVital = async (id) => {
 };
 export const totalVital = async () => {
   try {
-    const res = await axios.get(`${backendUrl}/vitals/totalVitals`, { headers: getAuthHeaders() });
+    const res = await axios.get(`${backendUrl}/api/vitals/totalVitals`, { headers: getAuthHeaders() });
     return res.data.totalVital;
   } catch (error) {
     console.error('Error fetching total vitals:', error);

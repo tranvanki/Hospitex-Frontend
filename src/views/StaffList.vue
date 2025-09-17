@@ -306,7 +306,6 @@ const isDeleteReady = computed(() => {
 import { API_BASE_URL } from './config.js';
 
 const backendUrl = API_BASE_URL;
-const getBaseURL = () => backendUrl;
 const getAuthHeaders = () => ({
   'Authorization': `Bearer ${localStorage.getItem('token')}`,
   'Content-Type': 'application/json'
@@ -352,7 +351,7 @@ const fetchStaffData = async () => {
     
     // GET PATIENT COUNTS FOR DOCTORS
     try {
-      const patientsResponse = await axios.get(`${getBaseURL()}/patients`, {
+      const patientsResponse = await axios.get(`${backendUrl}/patients`, {
         headers: getAuthHeaders()
       });
       
@@ -427,7 +426,7 @@ const deleteStaff = async () => {
 
     console.log('Deleting staff:', selectedStaff.value._id);
     
-    await axios.delete(`${getBaseURL()}/staffs/${selectedStaff.value._id}`, {
+    await axios.delete(`${backendUrl}/staffs/${selectedStaff.value._id}`, {
       headers: getAuthHeaders()
     });
 
@@ -480,7 +479,7 @@ const openEditModal = (staff) => {
 const updateStaff = async () => {
   try {
     updating.value = true;
-    await axios.put(`${getBaseURL()}/staffs/${editingStaff.value._id}`, editForm.value, {
+    await axios.put(`${backendUrl}/staffs/${editingStaff.value._id}`, editForm.value, {
       headers: getAuthHeaders()
     });
     alert('Staff updated successfully!');

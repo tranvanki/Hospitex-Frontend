@@ -1,6 +1,6 @@
 // src/services/records.js
 import axios from 'axios';
-
+ 
 import { API_BASE_URL } from './config.js';
 
 const backendUrl = API_BASE_URL;
@@ -18,7 +18,7 @@ function getAuthHeaders() {
 //  Get all medical records
 export const getAllRecords = async () => {
   try {
-    const response = await axios.get(`${backendUrl}/medic-records`, {
+    const response = await axios.get(`${backendUrl}/api/records`, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -31,7 +31,7 @@ export const createMedicalRecord = async (recordData) => {
   //
   try{
     console.log('Using headers:', getAuthHeaders());
-    const response = await axios.post(`${backendUrl}/medic-records`, recordData, {
+    const response = await axios.post(`${backendUrl}/api/records`, recordData, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -45,7 +45,7 @@ export const createMedicalRecord = async (recordData) => {
 //  Get record by ID
 export const getRecordById = async (id) => {
   try {
-    const response = await axios.get(`${backendUrl}/medic-records/${id}`, {
+    const response = await axios.get(`${backendUrl}/api/records/${id}`, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -58,7 +58,7 @@ export const getRecordById = async (id) => {
 //  Add new medical record
 export const addRecord = async (recordData) => {
   try {
-    const response = await axios.post(`${backendUrl}/medic-records`, recordData, {
+    const response = await axios.post(`${backendUrl}/api/records`, recordData, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -71,7 +71,7 @@ export const addRecord = async (recordData) => {
 //  Update record
 export const updateRecord = async (id, recordData) => {
   try {
-    const response = await axios.put(`${backendUrl}/medic-records/${id}`, recordData, {
+    const response = await axios.put(`${backendUrl}/api/records/${id}`, recordData, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -84,7 +84,7 @@ export const updateRecord = async (id, recordData) => {
 //  Delete record
 export const deleteRecord = async (id) => {
   try {
-    await axios.delete(`${backendUrl}/medic-records/${id}`, {
+    await axios.delete(`${backendUrl}/api/records/${id}`, {
       headers: getAuthHeaders()
     });
   } catch (error) {
@@ -95,7 +95,7 @@ export const deleteRecord = async (id) => {
 //total medical records
 export const totalMedicalRecords = async () => {
   try {
-    const res = await axios.get(`${backendUrl}/medic-records/totalMedicalRecords`, { headers: getAuthHeaders() });
+    const res = await axios.get(`${backendUrl}/api/records/totalMedicalRecords`, { headers: getAuthHeaders() });
     return res.data.totalMedicRecord;
   } catch (error) {
     console.error('Error fetching total medical records:', error);
