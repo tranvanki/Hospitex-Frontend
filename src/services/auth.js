@@ -32,19 +32,18 @@ export const login = async (staff_name, password) => {
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
     localStorage.setItem('staff_name', staff_name);
-    localStorage.setItem('staff_id', 'logged_in_user');
+    localStorage.setItem('staff_id', staff_id);
     
     // Store user object for admin dashboard
     localStorage.setItem('user', JSON.stringify({
-      id: 'logged_in_user',
-      name: staff_name,
+      id: staff_id,
+      staff_name: staff_name,
       role: role,
-      staff_name: staff_name
     }));
     
     console.log('💾 User data stored successfully');
     
-    return { token, role, staff_id: 'logged_in_user', staff_name };
+    return { token, role, id, staff_name };
   } catch (error) {
     console.error('❌ Login error:', error);
     throw error;

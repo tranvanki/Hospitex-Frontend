@@ -87,11 +87,10 @@ onMounted(async () => {
 
   } catch (err) {
     console.error('Error loading data:', err);
-    
-    // ✅ Xử lý các loại lỗi cụ thể
+  
     if (err.response?.status === 401) {
       error.value = 'Your session has expired. Please login again.';
-      localStorage.removeItem('token'); // Xóa token hết hạn
+      localStorage.removeItem('token'); 
       setTimeout(() => router.push('/login'), 2000);
     } else if (err.response?.status === 403) {
       error.value = 'You do not have permission to edit this patient.';
@@ -148,7 +147,7 @@ const handleCancel = () => {
 };
 </script>
 
-<!-- Template giữ nguyên như cũ -->
+
 <template>
   <div class="edit-patient-container">
     <div class="edit-patient-card">
@@ -291,7 +290,7 @@ const handleCancel = () => {
           <div class="form-actions">
             <button type="submit" class="btn btn-primary" :disabled="submitting">
               <span v-if="submitting">Updating...</span>
-              <span v-else">Update Patient</span>
+              <span v-else>Update Patient</span>
             </button>
             <button 
               type="button" 
