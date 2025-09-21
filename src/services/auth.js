@@ -18,40 +18,40 @@ export const login = async (staff_name, password) => {
       timeout: 10000
     });
 
-    console.log('📡 Login response received');
+    console.log(' Login response received');
 
-    const { token, role } = response.data;
+    const { token, role, staff_id, id} = response.data;
     
     if (!token || !role) {
       throw new Error('Invalid server response: missing token or role');
     }
     
-    console.log('✅ Login successful');
+    console.log(' Login successful');
     
     // Store authentication data
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
     localStorage.setItem('staff_name', staff_name);
-    localStorage.setItem('staff_id', staff_id);
+    localStorage.setItem('staff_id', staff_id || id); // Use staff_id or fallback to id
     
     // Store user object for admin dashboard
     localStorage.setItem('user', JSON.stringify({
-      id: staff_id,
+      id: staff_id || id,
       staff_name: staff_name,
       role: role,
     }));
     
-    console.log('💾 User data stored successfully');
+    console.log(' User data stored successfully');
     
     return { token, role, id, staff_name };
   } catch (error) {
-    console.error('❌ Login error:', error);
+    console.error(' Login error:', error);
     throw error;
   }
 };
 
 /**
- * 👤 User signup function
+ *  User signup function
  * @param {object} formData - User registration data
  * @returns {Promise<object>} Signup response
  */
@@ -71,23 +71,23 @@ export const signup = async (formData) => {
 };
 
 /**
- * 🔍 Get current logged-in user
+ *  Get current logged-in user
  * @returns {object|null} User object or null if not found
  */
 export const getCurrentUser = () => {
   try {
     const userStr = localStorage.getItem('user');
     const user = userStr ? JSON.parse(userStr) : null;
-    console.log('🔍 Getting current user:', user?.name || 'Not found');
+    console.log(' Getting current user:', user?.name || 'Not found');
     return user;
   } catch (error) {
-    console.error('❌ Error parsing user data:', error);
+    console.error(' Error parsing user data:', error);
     return null;
   }
 };
 
 export const logout = () => {
-  console.log('🚪 Logging out...');
+  console.log(' Logging out...');
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('staff_name');
@@ -95,5 +95,5 @@ export const logout = () => {
   localStorage.removeItem('staff_id');
   localStorage.removeItem('_id');
   localStorage.removeItem('id');
-  console.log('✅ Logout completed');
+  console.log(' Logout completed');
 };
